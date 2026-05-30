@@ -1,46 +1,26 @@
-const taskInput = document.getElementById("taskInput");
-const addBtn = document.getElementById("addBtn");
-const taskList = document.getElementById("taskList");
+document.getElementById("userForm").addEventListener("submit", function (event) {
+  event.preventDefault(); // Prevent form from reloading the page
 
-// Add task
-addBtn.addEventListener("click", function () {
+  // Create a FormData object from the form
+  const formData = new FormData(event.target);
+  const newEntry = {};
 
-    const taskText = taskInput.value;
+  // Convert FormData to a plain object
+  formData.forEach((value, key) => {
+    newEntry[key] = value.trim(); // Trim whitespace
+  });
 
-    // Check empty input
-    if (taskText === "") {
-        alert("Please enter a task");
-        return;
-    }
+  // Get existing responses from localStorage or start with empty array
+  const existingData = JSON.parse(localStorage.getItem("formResponse")) || [];
 
-    // Create list item
-    const li = document.createElement("li");
+  // Add the new entry to the array
+  existingData.push(newEntry);
 
-    // Create span for task text
-    const span = document.createElement("span");
-    span.textContent = taskText;
+  // Store updated array in localStorage
+  localStorage.setItem("formResponse", JSON.stringify(existingData));
 
-    // Toggle completed
-    span.addEventListener("click", function () {
-        span.classList.toggle("completed");
-    });
+  alert("Form submitted and stored successfully!");
 
-    // Delete button
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-
-    // Delete task
-    deleteBtn.addEventListener("click", function () {
-        li.remove();
-    });
-
-    // Add span and button to li
-    li.appendChild(span);
-    li.appendChild(deleteBtn);
-
-    // Add li to ul
-    taskList.appendChild(li);
-
-    // Clear input
-    taskInput.value = "";
+  // Optionally, clear the form
+  event.target.reset();
 });
