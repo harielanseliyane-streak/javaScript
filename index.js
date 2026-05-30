@@ -1,26 +1,53 @@
-document.getElementById("userForm").addEventListener("submit", function (event) {
-  event.preventDefault(); // Prevent form from reloading the page
+const display = document.getElementById("display");
 
-  // Create a FormData object from the form
-  const formData = new FormData(event.target);
-  const newEntry = {};
+function appendValue(value) {
+  display.value += value;
+}
 
-  // Convert FormData to a plain object
-  formData.forEach((value, key) => {
-    newEntry[key] = value.trim(); // Trim whitespace
-  });
+function clearDisplay() {
+  display.value = "";
+}
 
-  // Get existing responses from localStorage or start with empty array
-  const existingData = JSON.parse(localStorage.getItem("formResponse")) || [];
+function deleteLast() {
+  display.value = display.value.slice(0, -1);
+}
 
-  // Add the new entry to the array
-  existingData.push(newEntry);
+function calculate() {
+  try {
+    display.value = eval(display.value);
+  } catch {
+    alert("Invalid Expression");
+  }
+}
 
-  // Store updated array in localStorage
-  localStorage.setItem("formResponse", JSON.stringify(existingData));
+/* 🎹 Keyboard Input Handling */
+document.addEventListener("keydown", function (event) {
+  const key = event.key;
 
-  alert("Form submitted and stored successfully!");
+  // Allow numbers and operators
+  if (
+    (key >= '0' && key <= '9') ||
+    key === '+' ||
+    key === '-' ||
+    key === '*' ||
+    key === '/' ||
+    key === '.'
+  ) {
+    appendValue(key);
+  }
 
-  // Optionally, clear the form
-  event.target.reset();
+  // Enter key for calculation
+  else if (key === "Enter") {
+    calculate();
+  }
+
+  // Backspace key
+  else if (key === "Backspace") {
+    deleteLast();
+  }
+
+  // Escape key to clear
+  else if (key === "Escape") {
+    clearDisplay();
+  }
 });
